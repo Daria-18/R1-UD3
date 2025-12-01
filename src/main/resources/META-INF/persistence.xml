@@ -5,7 +5,7 @@
  version="2.0">
  <persistence-unit name="Discografia">
  <class>Cantante</class>
-<class>Album</class>
+ <class>Album</class>
  <properties>
  
  <!--
