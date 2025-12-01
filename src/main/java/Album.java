@@ -10,8 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name="Albumes")
 public class Album {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,6 +21,7 @@ public class Album {
 	String nombre;
 	@ManyToOne
 	Cantante cantante;
+	@Column(name="TotalCanciones")
 	int numCanciones;
 	@Column(columnDefinition = "TIME(0)")
 	LocalTime duracion;

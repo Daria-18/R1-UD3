@@ -27,6 +27,10 @@ public class Pruebas {
 		em.close();
 		emf.close();
 	}
+	/**
+	 * Método que inicializa la tabla de cantantes. 
+	 * Se realiza una transacción por artista para que mantenga el orden establecido en el método
+	 */
 	public static void IniciarTablaCantantes() {
 		List<Cantante> listaCantantes=new ArrayList<Cantante>();
 		listaCantantes.add(new Cantante("Taylor Swift", "Estadounidense", LocalDate.of(2006, 10, 24), Cantante.Estado.enActivo));
@@ -61,6 +65,11 @@ public class Pruebas {
             System.err.println("Error!");
         }
 	}
+	/**
+	 * Permite buscar un artista usando un long para buscar por clave primaria
+	 * @param l - Donde ID como long
+	 * @return Cantante
+	 */
 	public static Cantante buscarCantantePorID(long l) {
 		
 		Cantante p=null;
@@ -77,6 +86,11 @@ public class Pruebas {
         } 
 		return p;
 	}
+	/**
+	 * Método que obtiene un cantante en base al parametro pasado. Realiza una consulta SELECT con la condición WHERE donde se da el nombre.
+	 * @param nombre - String la cual se empleará en la busqueda.
+	 * @return Cantante - Devuelve un objeto {@link Cantante} de una lista de un único elemento 
+	 */
 	public static Cantante buscarCantantePorNombre(String nombre) {
 		List<Cantante> lista = null;
 		try {
@@ -94,6 +108,10 @@ public class Pruebas {
         } 
 		return lista.getFirst();
 	}
+	/**
+	 * 
+	 * @param nombre
+	 */
 	public static void eliminarCantante(String nombre) {
 		Cantante c=buscarCantantePorNombre(nombre);
 		if (c!=null) {
@@ -104,6 +122,10 @@ public class Pruebas {
 		}else System.out.println("Cantante no encontrado");
 		
 	}
+	/**
+	 * 
+	 * @param c
+	 */
 	public static void añadirCantante (Cantante c) {
 		em.getTransaction().begin();
 		em.persist(c);
@@ -111,6 +133,11 @@ public class Pruebas {
 		em.getTransaction().commit();
 	}
 	
+	/**
+	 * 
+	 * @param c
+	 * @param a
+	 */
 	public static void añadirAlbumaACantante(Cantante c, Album a) {
 		c.addAlbum(a);
 		em.getTransaction().begin();
