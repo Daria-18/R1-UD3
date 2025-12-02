@@ -6,6 +6,7 @@
  <persistence-unit name="Discografia">
  <class>Cantante</class>
  <class>Album</class>
+ <class>Genero</class>
  <properties>
  
  <!--

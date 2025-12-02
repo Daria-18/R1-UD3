@@ -29,7 +29,8 @@ public class Pruebas {
 					+"4-Buscar album"+"\n"
 					+"5-Añadir album"+"\n"
 					+"6-Eliminar album"+"\n"
-					+"7-SALIR");
+					+"7-Ver generos"+"\n"
+					+"8-SALIR");
 					opcion=sc.nextInt();
 				
 					switch(opcion) {
@@ -103,6 +104,9 @@ public class Pruebas {
 							eliminarAlbum(nombre);
 							break;
 						case 7:
+							
+							break;
+						case 8:
 							System.out.println("FIN DEL PROGRAMA");
 							break;
 						default:
@@ -110,7 +114,7 @@ public class Pruebas {
 							break;
 						
 					}
-		}while(opcion!=7);
+		}while(opcion!=8);
 		
 		sc.close();
 		
@@ -245,45 +249,6 @@ public class Pruebas {
 	    return listaCantantes;
 	}
     
-    
-	/**
-	 * Método que inicializa la tabla de cantantes. 
-	 * Se realiza una transacción por artista para que mantenga el orden establecido en el método
-	 */
-	public static void IniciarTablaCantantes() {
-		List<Cantante> listaCantantes=new ArrayList<Cantante>();
-		listaCantantes.add(new Cantante("Taylor Swift", "Estadounidense", LocalDate.of(2006, 10, 24), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Ariana Grande",  "Estadounidense",  LocalDate.of(2013, 3, 26), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Lady Gaga", "Estadounidense",  LocalDate.of(2008, 4, 8), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Johnny Orlando", "Canadiense",  LocalDate.of(2015, 12, 15), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Alec Benjamin", "Estadounidense",  LocalDate.of(2013, 11, 1), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Troye Sivan", "Australiano",  LocalDate.of(2007, 6, 1), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Olivia Rodrigo", "Estadounidense",  LocalDate.of(2021, 1, 8), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Charli XCX", "Británica",  LocalDate.of(2008, 5, 1), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Dua Lipa", "Británica",  LocalDate.of(2015, 8, 18), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Harry Styles", "Británico",  LocalDate.of(2010, 7, 23), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Alessandra Mele", "Noruega", LocalDate.of(2022, 11, 5), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Ed Sheeran", "Británico",  LocalDate.of(2011, 4, 26), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Kyle Alessandro", "Noruego",  LocalDate.of(2017, 1, 1), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Sabrina Carpenter", "Estadounidense", LocalDate.of(2014, 3, 14), Cantante.Estado.enActivo));
-		listaCantantes.add(new Cantante("Michael Jackson", "Estadounidense", LocalDate.of(1964, 1, 1), Cantante.Estado.retirado));
-		listaCantantes.add(new Cantante("Ross Lynch", "Estadounidense",  LocalDate.of(2012, 4, 2), Cantante.Estado.enActivo));
-		
-        try {
-            for(Cantante cantante:listaCantantes) {
-            	em.getTransaction().begin();
-            	em.persist(cantante);
-            	em.getTransaction().commit();
-        	}
-            System.out.println("Cantantes añadidos correctamente.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            System.err.println("Error!");
-        }
-	}
 	/**
 	 * Permite buscar un artista usando un long para buscar por clave primaria
 	 * @param l - Donde ID como long

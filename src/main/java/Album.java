@@ -3,12 +3,15 @@
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -25,8 +28,8 @@ public class Album {
 	int numCanciones;
 	@Column(columnDefinition = "TIME(0)")
 	LocalTime duracion;
-	/*@ManyToMany(mappedBy="album")
-	Set<Album> generos=new HashSet<Album>();*/
+	@ManyToMany(mappedBy="GENERO")
+	Set<Album> generos=new HashSet<Album>();
 	LocalDate fechaLanzamiento;
 	
 	public Album() {}
