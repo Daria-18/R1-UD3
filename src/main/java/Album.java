@@ -21,6 +21,7 @@ public class Album {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long id;
+	@Column(name="nombre", nullable = false)
 	String nombre;
 	@ManyToOne
 	Cantante cantante;
@@ -28,14 +29,17 @@ public class Album {
 	int numCanciones;
 	@Column(columnDefinition = "TIME(0)")
 	LocalTime duracion;
-	@ManyToMany(mappedBy="GENERO")
-	Set<Album> generos=new HashSet<Album>();
+	@ManyToMany(mappedBy="albumes")
+	Set<Genero> generos=new HashSet<Genero>();
+	@Column(name="fecha_lanzamiento")
 	LocalDate fechaLanzamiento;
 	
-	public Album() {}
+	public Album() {
+		this.generos = new HashSet<>();
+	}
 	
 	public Album(String nombre, int numCanciones, LocalTime duracion,LocalDate fechaLanzamiento) {
-		super();
+		this();
 		this.nombre = nombre;
 		this.numCanciones = numCanciones;
 		this.duracion = duracion;
@@ -60,6 +64,22 @@ public class Album {
 	public String toString() {
 		return "Album [nombre=" + nombre + ", cantante=" + cantante + ", numCanciones=" + numCanciones + ", duracion="
 				+ duracion + ", fechaLanzamiento=" + fechaLanzamiento + "]";
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Set<Genero> getGeneros() {
+		return generos;
+	}
+
+	public void setGeneros(Set<Genero> generos) {
+		this.generos = generos;
 	}
 	
 	

@@ -19,6 +19,7 @@ public class Pruebas {
 		int opcion=0;
 		String nombre="";
 		String nombreAlbum="";
+		iniciarGeneros();
 		IniciarTablas();
 		
 		do {
@@ -30,7 +31,8 @@ public class Pruebas {
 					+"5-Añadir album"+"\n"
 					+"6-Eliminar album"+"\n"
 					+"7-Ver generos"+"\n"
-					+"8-SALIR");
+					+"8-Asociar géneros a un álbum"+"\n"
+					+"9-SALIR");
 					opcion=sc.nextInt();
 				
 					switch(opcion) {
@@ -104,9 +106,31 @@ public class Pruebas {
 							eliminarAlbum(nombre);
 							break;
 						case 7:
-							
+							mostrarGeneros();
 							break;
 						case 8:
+							sc.nextLine();
+							System.out.println("Introduce el nombre del album");
+							String albumUser = sc.nextLine();
+							System.out.println("Introduce uno o varios generos separados por comas");
+							List<Genero> generosDisponibles = mostrarGeneros();
+							String generoUser = sc.nextLine();
+							String[] generosArray = generoUser.split(",");
+							List<Genero> generosUser = new ArrayList<>();
+							for(String gen : generosArray) {
+								gen = gen.trim();
+								for(Genero genAux : generosDisponibles) {
+									if(genAux.getNombre().equalsIgnoreCase(gen)) {
+										generosUser.add(genAux);
+										break;
+									}
+								}
+							}
+							if(generosUser.isEmpty()) System.out.println("Genero no valido");
+							else asociar(albumUser, generosUser);
+							
+							break;
+						case 9:
 							System.out.println("FIN DEL PROGRAMA");
 							break;
 						default:
@@ -114,7 +138,7 @@ public class Pruebas {
 							break;
 						
 					}
-		}while(opcion!=8);
+		}while(opcion!=9);
 		
 		sc.close();
 		
@@ -122,7 +146,104 @@ public class Pruebas {
 		emf.close();
 	}
     
-    /**
+    public static List<Genero> mostrarGeneros() {
+		// TODO Auto-generated method stub
+    	List<Genero> generos = null;
+    	try {
+            em.getTransaction().begin();
+
+            generos = em.createQuery("SELECT g FROM Genero g",Genero.class).getResultList();
+           
+            for(Genero gen : generos)System.out.println(gen.getNombre());;
+            
+            em.getTransaction().commit();
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+    	return generos;
+	}
+    
+    public static void iniciarGeneros() {
+    	try {
+            em.getTransaction().begin();
+
+            Genero pop = new Genero("Pop");
+            Genero rock = new Genero("Rock");
+            Genero rnb = new Genero("R&B");
+            Genero dance = new Genero("Dance");
+            Genero indie = new Genero("Indie");
+            Genero country = new Genero("Country");
+            Genero electro = new Genero("Electropop");
+            Genero soul = new Genero("Soul");
+            Genero funk = new Genero("Funk");
+            Genero latino = new Genero("Latino");
+            Genero alternative = new Genero("Alternative");
+            Genero hiphop = new Genero("Hip-Hop");
+            Genero trap = new Genero("Trap");
+            Genero disco = new Genero("Disco");
+            Genero folk = new Genero("Folk");
+            Genero jazz = new Genero("Jazz");
+            Genero edm = new Genero("EDM");
+            Genero acoustic = new Genero("Acoustic");
+
+            List<Genero> generos = List.of(
+                pop, rock, rnb, dance, indie, country, electro, soul, funk,
+                latino, alternative, hiphop, trap, disco, folk, jazz, edm, acoustic
+            );
+
+            for (Genero g : generos) {em.persist(g);} //Persistencia de los generos a MySQL
+            
+            System.out.println("Géneros de ejemplo insertados.");
+            em.getTransaction().commit();
+            
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        }
+    }
+
+	private static void asociar(String nombreAlbum, List<Genero> generos) {
+		// TODO Auto-generated method stub
+		try {
+			em.getTransaction().begin();
+			Album album = em.createQuery(
+					"SELECT a FROM Album a WHERE a.nombre = :nombre",
+					Album.class
+					)
+					.setParameter("nombre", nombreAlbum)
+					.getResultStream().findFirst().orElse(null);
+			if (album == null) {
+				System.out.println("El album: " + nombreAlbum + " no se ha encontrado");
+				em.getTransaction().rollback(); //if null, tirar transaccion atras
+				return;
+			}
+			
+			for (Genero gen : generos) {
+				gen.getAlbumes().add(album);
+				em.merge(gen);
+			}
+			
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			if (em.getTransaction().isActive()) {
+	            em.getTransaction().rollback();
+	        }
+		}
+		
+		
+	}
+
+	/**
      * 
      */
     public static void IniciarTablas() {
@@ -149,10 +270,28 @@ public class Pruebas {
      */
     public static List<Cantante> asociarCantanteAlbum() {
 		List<Cantante> listaCantantes = new ArrayList<>();
+		//Retrieve de los generos 
 		
+		Genero pop = em.createQuery("SELECT g FROM Genero g WHERE g.nombre = :nombre", Genero.class)
+	               .setParameter("nombre", "Pop")
+	               .getSingleResult();
+		Genero indie = em.createQuery("SELECT g FROM Genero g WHERE g.nombre = :nombre", Genero.class)
+	               .setParameter("nombre", "Indie")
+	               .getSingleResult();
+		
+		//Asociacion de artista con generos
 	    Cantante taylor = new Cantante("Taylor Swift", "Estadounidense", LocalDate.of(2006, 10, 24), Cantante.Estado.enActivo);
-	    taylor.addAlbum(new Album("Taylor Swift", 15, LocalTime.of(0, 53, 0), LocalDate.of(2006, 10, 24)));
-	    taylor.addAlbum(new Album("Fearless", 13, LocalTime.of(1, 5, 0), LocalDate.of(2008, 11, 11)));
+	    Album taylorSwift = new Album("Taylor Swift", 15, LocalTime.of(0, 53, 0), LocalDate.of(2006, 10, 24));
+	    taylorSwift.setCantante(taylor);
+	    taylorSwift.getGeneros().add(pop);
+	    
+	    Album fearless = new Album("Fearless", 13, LocalTime.of(1, 5, 0), LocalDate.of(2008, 11, 11));
+	    fearless.setCantante(taylor);
+	    fearless.getGeneros().add(indie);
+	    fearless.getGeneros().add(pop);
+	    
+	    taylor.addAlbum(taylorSwift);
+	    taylor.addAlbum(fearless);	    
 	    taylor.addAlbum(new Album("Speak Now", 14, LocalTime.of(1, 3, 0), LocalDate.of(2010, 10, 25)));
 	    listaCantantes.add(taylor);
 
@@ -350,7 +489,7 @@ public class Pruebas {
                 em.getTransaction().rollback();
             }
         } 
-		return lista.getFirst();
+		return (lista == null || lista.isEmpty()) ? null : lista.get(0);
 	}
 	
 	/**

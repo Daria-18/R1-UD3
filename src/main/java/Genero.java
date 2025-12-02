@@ -1,29 +1,35 @@
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
 
 @Entity
+@Table(name="Genero")
 public class Genero {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(name="nombre", nullable = false, unique = true)
 	String nombre;
 	@ManyToMany
 	@JoinTable(
 			name="album_genero",
-			joinColumns=@JoinColumn(name="album_id"),
-			inverseJoinColumns=@JoinColumn(name="genero_id")
+			joinColumns=@JoinColumn(name="genero_id"),
+			inverseJoinColumns=@JoinColumn(name="album_id")
 	)
 	private Set<Album> albumes = new HashSet<>();
 	
-	public Genero() {}
+	public Genero() {
+		this.albumes = new HashSet<>();
+	}
 	
 	public Genero(String nombre) {
 		this.nombre=nombre;
